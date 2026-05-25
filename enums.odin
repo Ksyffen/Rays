@@ -2,8 +2,9 @@ package rays
 
 
 DragMode :: enum {
-	RAYSOURCE,
-	NEGATIVE_CIRCLE,
+	POINT_SOURCE,
+	DIRECTIONAL_SOURCE,
+	CIRCLE,
 }
 
 
