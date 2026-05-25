@@ -26,6 +26,7 @@ Lens :: struct #all_or_none {
 	circle:  Circle,
 	// TODO:
 	ref_coeff: f32,
+	color: rl.Color,
 }
 
 Ray :: struct #all_or_none {

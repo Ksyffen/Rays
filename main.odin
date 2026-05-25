@@ -28,7 +28,7 @@ loop :: proc() {
 
 
 loop_iteration :: proc() {
-	if is_mouse_move() {
+	if is_mouse_move() || rl.GetKeyPressed() != rl.KeyboardKey.KEY_NULL {
 		// delete all rays
 		clear(&rays)
 
@@ -36,8 +36,8 @@ loop_iteration :: proc() {
 			switch drag_mode {
 			case .POINT_SOURCE:
 				start_point := rl.GetMousePosition()
-				for elem in 1 ..= RAYS_NUMBER {
-					angle := 2.0 * (rl.PI / RAYS_NUMBER) * f32(elem)
+				for elem in 1 ..= rays_number {
+					angle := 2.0 * (rl.PI / f32(rays_number)) * f32(elem)
 					direction := rl.Vector2Normalize((rl.Vector2{m.cos_f32(angle), m.sin_f32(angle)}))
 					new_ray := Ray {
 						start_point = start_point,
@@ -192,6 +192,16 @@ input :: proc() {
 	if rl.IsKeyDown(.THREE) do drag_mode = .POINT_SOURCE
 	if rl.IsKeyDown(.FOUR) do drag_mode = .CIRCLE
 	if rl.IsKeyDown(.FIVE) do drag_mode = .DIRECTIONAL_SOURCE
+	if rl.IsKeyReleased(.D){
+		if is_debug_mode do is_debug_mode = false
+		else do is_debug_mode = true
+	}
+	if rl.IsKeyReleased(.EQUAL) do rays_number += 10.0
+	if rl.IsKeyReleased(.MINUS){
+		rays_number -= 10.0
+		if rays_number <= 0 do rays_number = 10
+	}
+
 }
 
 
@@ -207,23 +217,27 @@ draw_all :: proc() {
 	for w in walls do rl.DrawLineV(w.start_point, w.end_point, WALL_COLOR)
 
 	// lenses
-	for l in lenses do rl.DrawCircleV(l.circle.center, l.circle.radius, LENS_COLOR)
+	for l in lenses do rl.DrawCircleV(l.circle.center, l.circle.radius, l.color)
 
 
 	// points on circle for debug
 	for_debug:{
 		if is_debug_mode{
-			points := get_points_on_circle(lenses[0].circle)
+			for l in lenses{
+				points := get_points_on_circle(l.circle)
 
-			for p, i in points {
-				rl.DrawCircleLinesV(p, 3.0, rl.MAGENTA)
+				for p, i in points {
+					rl.DrawCircleLinesV(p, 3.0, rl.MAGENTA)
 
-				if i == len(points) - 1 {
-					rl.DrawLineV(p, points[0], rl.YELLOW)
-					break
+					if i == len(points) - 1 {
+						rl.DrawLineV(p, points[0], rl.YELLOW)
+						break
+					}
+					rl.DrawLineV(p, points[i + 1], rl.YELLOW)
 				}
-				rl.DrawLineV(p, points[i + 1], rl.YELLOW)
+	
 			}
+
 		}
 	}
 
