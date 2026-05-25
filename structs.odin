@@ -13,7 +13,7 @@ Circle :: struct #all_or_none {
 	radius: f32,
 }
 
-get_points_on_circle :: proc(circle: Circle, rad_step: f32 = 0.15) -> (points: [dynamic]rl.Vector2) {
+get_points_on_circle :: proc(circle: Circle, rad_step: f32 = 0.1) -> (points: [dynamic]rl.Vector2) {
 	for i := f32(0); i <= 2 * rl.PI; i += rad_step {
 		circle_point_1 := circle.center + circle.radius * rl.Vector2{m.cos_f32(i), m.sin_f32(i)}
 		append(&points, circle_point_1)

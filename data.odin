@@ -14,7 +14,7 @@ walls: []Wall = {
 }
 
 lenses: []Lens = {{circle={center= {400,500}, radius = 100.0}, ref_coeff=1.33, color={10, 210, 241, 120}},
-				 {circle={center= {440,500}, radius = 100.0}, ref_coeff=0.88, color={200, 210, 241, 120}}}
+				 {circle={center= {440,500}, radius = 110.0}, ref_coeff=0.88, color={200, 210, 241, 120}}}
 rays_drawing_type := RaysDrawingType.LINES
 
 is_debug_mode: bool = true

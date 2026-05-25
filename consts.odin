@@ -8,7 +8,7 @@ SCREEN_NAME :: "raysssssss"
 BG_COLOR :: rl.BLACK
 
 // RAYS
-RAY_LENGTH :: 400.0
+RAY_LENGTH :: 430.0
 RAY_COLOR :: rl.YELLOW
 
 // WALL
