@@ -7,6 +7,8 @@ drag_mode := DragMode.POINT_SOURCE
 
 rays: [dynamic]Ray
 
+
+
 walls: []Wall = {
 	{start_point = {100.0, 100.0}, end_point = {300.0, 400}},
 	{start_point = {1000.0, 110.0}, end_point = {1000.0, 330}},
