@@ -24,7 +24,6 @@ get_points_on_circle :: proc(circle: Circle, rad_step: f32 = 0.1) -> (points: [d
 
 Lens :: struct #all_or_none {
 	circle:  Circle,
-	// TODO:
 	ref_coeff: f32,
 	color: rl.Color,
 }

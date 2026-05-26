@@ -1,6 +1,9 @@
 package rays
 
+// import "core:math/linalg"
+// import "core:fmt"
 import m "core:math"
+
 import rl "vendor:raylib"
 
 
@@ -32,7 +35,7 @@ loop_iteration :: proc() {
 		// delete all rays
 		clear(&rays)
 
-		on_input: {
+		drag: {
 			switch drag_mode {
 			case .POINT_SOURCE:
 				start_point := rl.GetMousePosition()
@@ -138,18 +141,30 @@ loop_iteration :: proc() {
 						norm_dir_dot := -rl.Vector2DotProduct(normal, r.direction)
 						k :f32 = 1.0 - m.pow(coeff, 2) * (1.0 - m.pow(norm_dir_dot, 2))
 						if k >= 0 {
-							//====
+							//====//
 						    new_direction := coeff * r.direction + (coeff * norm_dir_dot - m.sqrt_f32(k)) * normal
-							//====
+							//====//
 							new_ray := Ray {
 								start_point = nearest_intesection,
 								direction   = rl.Vector2Normalize(new_direction),
 								length      = RAY_LENGTH * 2,
 								}
 							append(&rays, new_ray)
-							}
 						}
-						//= todo when k < 0
+
+						// else{
+						// 	new_ray := Ray {
+						// 		start_point = nearest_intesection,
+						// 		direction   =linalg.reflect(r.direction, normal),
+						// 		length      = RAY_LENGTH * 2,
+						// 		}
+						// 	append(&rays, new_ray)
+
+						// }
+
+						}
+
+
 					}
 				}
 		}
@@ -179,7 +194,6 @@ loop_iteration :: proc() {
 				if nearest_intersection != {} {
 					ray.length = rl.Vector2Distance(nearest_intersection, ray.start_point)
 				}
-
 			}
 		}
 	}
@@ -188,20 +202,28 @@ loop_iteration :: proc() {
 
 input :: proc() {
 	if rl.IsKeyDown(.ONE) do rays_drawing_type = RaysDrawingType.LINES
-	if rl.IsKeyDown(.TWO) do rays_drawing_type = RaysDrawingType.TRIANGLES
-	if rl.IsKeyDown(.THREE) do drag_mode = .POINT_SOURCE
-	if rl.IsKeyDown(.FOUR) do drag_mode = .CIRCLE
-	if rl.IsKeyDown(.FIVE) do drag_mode = .DIRECTIONAL_SOURCE
-	if rl.IsKeyReleased(.D){
+	else if rl.IsKeyDown(.TWO) do rays_drawing_type = RaysDrawingType.TRIANGLES
+	else if rl.IsKeyDown(.THREE) do drag_mode = .POINT_SOURCE
+	else if rl.IsKeyDown(.FOUR) do drag_mode = .CIRCLE
+	else if rl.IsKeyDown(.FIVE) do drag_mode = .DIRECTIONAL_SOURCE
+	else if rl.IsKeyReleased(.D){
 		if is_debug_mode do is_debug_mode = false
 		else do is_debug_mode = true
 	}
-	if rl.IsKeyReleased(.EQUAL) do rays_number += 10.0
-	if rl.IsKeyReleased(.MINUS){
-		rays_number -= 10.0
-		if rays_number <= 0 do rays_number = 10
+	else if drag_mode == .POINT_SOURCE{
+		if rl.IsKeyReleased(.EQUAL) do rays_number += 10.0
+		else if rl.IsKeyReleased(.MINUS){
+			rays_number -= 10.0
+			if rays_number <= 0 do rays_number = 10
+		}	
 	}
-
+	else if drag_mode == .CIRCLE{
+		if rl.IsKeyReleased(.EQUAL) do lenses[0].circle.radius += 10.0
+		else if rl.IsKeyReleased(.MINUS){
+			lenses[0].circle.radius -= 10.0
+			if lenses[0].circle.radius <= 0 do lenses[0].circle.radius = 10
+		}	
+	}
 }
 
 
@@ -219,7 +241,6 @@ draw_all :: proc() {
 	// lenses
 	for l in lenses do rl.DrawCircleV(l.circle.center, l.circle.radius, l.color)
 
-
 	// points on circle for debug
 	for_debug:{
 		if is_debug_mode{
@@ -235,7 +256,7 @@ draw_all :: proc() {
 					}
 					rl.DrawLineV(p, points[i + 1], rl.YELLOW)
 				}
-	
+
 			}
 
 		}
@@ -269,6 +290,7 @@ draw_all :: proc() {
 
 			rl.EndDrawing()
 }
+
 
 
 is_mouse_move :: proc() -> bool {
